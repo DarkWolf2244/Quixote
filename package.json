@@ -1,0 +1,19 @@
+{
+  "name": "quixote",
+  "version": "1.0.0",
+  "description": "A custom Question of the Day Discord bot",
+  "main": "index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DarkWolf2244/Quixote.git"
+  },
+  "author": "DarkWolf",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DarkWolf2244/Quixote/issues"
+  },
+  "homepage": "https://github.com/DarkWolf2244/Quixote#readme"
+}
