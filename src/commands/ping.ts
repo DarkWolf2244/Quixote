@@ -1,12 +1,14 @@
 // Command: Ping
 // Ping just makes the bot reply with a quote from https://zenquotes.io/api/random to the channel
 
-import fetch from 'node-fetch';
+
 import { QuixoteCommand } from '../interfaces';
 import { CommandInteraction } from 'discord.js';
 import { SlashCommandBuilder } from '@discordjs/builders';
+import axios from 'axios';
+import { SuccessEmbed } from '../EmbedTemplates';
 
-class Command implements QuixoteCommand {
+export class Command implements QuixoteCommand {
     name: string = 'ping';
     data: SlashCommandBuilder
     
@@ -17,6 +19,14 @@ class Command implements QuixoteCommand {
     }
 
     execute(interaction: CommandInteraction): any {
-        return interaction.channel.send('Pong!');
+        axios.get('https://zenquotes.io/api/random')
+            .then(res => {
+                console.log(res);
+                let embed = SuccessEmbed('Zen Quote', `"${res.data[0].q}" --${res.data[0].a}`);
+                interaction.reply({ embeds: [embed] });
+            })
+            .catch(err => {
+                console.error(err);
+            });
     }
 }

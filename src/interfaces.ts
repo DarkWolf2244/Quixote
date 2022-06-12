@@ -7,3 +7,9 @@ export interface QuixoteCommand {
     
     execute(interaction: CommandInteraction): any;
 }
+
+export interface ConfigInterface {
+    clientId: string;
+    guildId: string;
+    queueChannelId: string;
+}
