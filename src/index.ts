@@ -5,6 +5,7 @@ import { setProperty, getProperty } from './Config';
 import 'colorts/lib/string';
 import * as fs from 'fs';
 import { clearScreenDown } from 'readline';
+import { renderQueue } from './QueueRenderer';
 
 
 require('dotenv').config();
@@ -38,15 +39,17 @@ export class Quixote {
             if (interaction.isCommand()) {
                 let commandInteraction: CommandInteraction = interaction as CommandInteraction;
                 let command: QuixoteCommand = this.commands.get(commandInteraction.commandName);
-
+                
                 if (command) {
-                    command.execute(commandInteraction);
+                    command.execute(commandInteraction, this);
                 }
             }
         });
         
         this.setProperty = setProperty;
         this.getProperty = getProperty;
+
+        // setInterval(() => renderQueue(this), 10000);
     }
 
     consoleError(error: string) {

@@ -21,7 +21,6 @@ export class Command implements QuixoteCommand {
     execute(interaction: CommandInteraction): any {
         axios.get('https://zenquotes.io/api/random')
             .then(res => {
-                console.log(res);
                 let embed = SuccessEmbed('Zen Quote', `"${res.data[0].q}" --${res.data[0].a}`);
                 interaction.reply({ embeds: [embed] });
             })

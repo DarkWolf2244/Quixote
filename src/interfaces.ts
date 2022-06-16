@@ -7,7 +7,7 @@ export interface QuixoteCommand {
     name: string;
     data: SlashCommandBuilder;
     
-    execute(interaction: CommandInteraction): any;
+    execute(interaction: CommandInteraction, quixote: Quixote): any;
 }
 
 export interface ConfigInterface {
@@ -23,4 +23,12 @@ export interface Quixote {
     consoleDebug(message: string): void;
     getProperty(property: string): any;
     setProperty(property: string, value: any): void;
+}
+
+export interface QOTD {
+    content: string
+}
+
+export interface QOTDQueue {
+    queue: QOTD[];
 }
