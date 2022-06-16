@@ -2,14 +2,7 @@ import { QuixoteCommand, ConfigInterface } from '../interfaces';
 import { CommandInteraction } from 'discord.js';
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { SuccessEmbed } from '../EmbedTemplates';
-
-import * as fs from 'fs';
-
-export function setProperty(property: string, value: any): void {
-    let config = JSON.parse(fs.readFileSync(__dirname + '/../config.json', 'utf8'));
-    config[property] = value;
-    fs.writeFileSync(__dirname + '/../config.json', JSON.stringify(config, null, 4));
-}
+import { setProperty } from '../Config';
 
 export class Command implements QuixoteCommand {
     name: string = 'setqueuechannel';

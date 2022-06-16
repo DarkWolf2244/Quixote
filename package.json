@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "register_cmd": "ts-node src/register_commands.ts",
-    "start": "nodemon src/index.ts -i src/config.json"
+    "start": "nodemon src/index.ts -i *.json"
   },
   "repository": {
     "type": "git",

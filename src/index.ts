@@ -1,14 +1,19 @@
 import { Client, Intents, ClientOptions, CommandInteraction, Collection, Interaction } from 'discord.js';
 import { QuixoteCommand } from './interfaces';
+import { setProperty, getProperty } from './Config';
 
 import 'colorts/lib/string';
 import * as fs from 'fs';
+import { clearScreenDown } from 'readline';
+
 
 require('dotenv').config();
 
-class Quixote {
+export class Quixote {
     public readonly client: Client;
     public commands: Collection<string, QuixoteCommand>;
+    public setProperty: (property: string, value: any) => void;
+    public getProperty: (property: string) => any;
 
     constructor(options: ClientOptions) {
         let client: any = new Client(options);
@@ -39,6 +44,17 @@ class Quixote {
                 }
             }
         });
+        
+        this.setProperty = setProperty;
+        this.getProperty = getProperty;
+    }
+
+    consoleError(error: string) {
+        console.error(`${'ERROR'.red}: ${error}`);
+    }
+
+    consoleDebug(message: string) {
+        console.debug(`${'DEBUG'.blue}: ${message}`);
     }
 }
 
@@ -49,4 +65,6 @@ quixote.client.login(process.env.DISCORD_TOKEN);
 process.on('SIGINT', () => {
     console.log('QUIXOTE'.blue + ": " + " Offline".red);
     quixote.client.user.setPresence({ status: 'invisible' });
+    quixote.client.destroy();
+    process.exit(0);
 });
