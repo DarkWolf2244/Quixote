@@ -14,6 +14,7 @@ export interface ConfigInterface {
     clientId: string;
     guildId: string;
     queueChannelId: string;
+    qotdChannelId: string;
 }
 
 export interface Quixote {
@@ -23,12 +24,16 @@ export interface Quixote {
     consoleDebug(message: string): void;
     getProperty(property: string): any;
     setProperty(property: string, value: any): void;
+    renderQueue(quixote: Quixote): void;
 }
 
 export interface QOTD {
-    content: string
+    content: string;
+    authorId: string;
+    messageId?: string;
 }
 
 export interface QOTDQueue {
     queue: QOTD[];
+    approved: QOTD[];
 }

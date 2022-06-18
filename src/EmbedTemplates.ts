@@ -4,7 +4,11 @@ let randomFooters = [
     `Hi, D4N13L.`,
     `My name is Quixote. I'm the QOTD bot sent by DarkWolf.`,
     `My predecessor was unfortunately destroyed. This incident will not affect the investigation.`,
-    `There's a small chance of seeing this footer.`
+    `There's a small chance of seeing this footer.`,
+    `I hate CAPTCHA.`,
+    `Did you know some of these footers were AI generated?`,
+    `I think you're pretty cool.`,
+    `The name's Quixote. Don Quixote.`
 ]
 
 let randomErrorFooters = [
@@ -26,4 +30,12 @@ export function ErrorEmbed(title: string, message: string): MessageEmbed {
         .setDescription(message)
         .setColor('#ff0000')
         .setFooter({ text: randomErrorFooters[Math.floor(Math.random() * randomErrorFooters.length)] });  
+}
+
+export function PendingEmbed(title: string, message: string): MessageEmbed {
+    return new MessageEmbed()
+        .setTitle(title)
+        .setDescription(message)
+        .setColor('#ffff00')
+        .setFooter({ text: randomFooters[Math.floor(Math.random() * randomFooters.length)] });  
 }

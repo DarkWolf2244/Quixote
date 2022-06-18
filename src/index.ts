@@ -1,11 +1,14 @@
-import { Client, Intents, ClientOptions, CommandInteraction, Collection, Interaction } from 'discord.js';
-import { QuixoteCommand } from './interfaces';
+import { Client, Intents, ClientOptions, CommandInteraction, Collection, Interaction, ButtonInteraction, Message, TextChannel } from 'discord.js';
+import { QOTDQueue, QuixoteCommand } from './interfaces';
 import { setProperty, getProperty } from './Config';
+import { SuccessEmbed } from './EmbedTemplates';
 
 import 'colorts/lib/string';
 import * as fs from 'fs';
 import { clearScreenDown } from 'readline';
 import { renderQueue } from './QueueRenderer';
+
+import * as node_schedule from 'node-schedule';
 
 
 require('dotenv').config();
@@ -15,6 +18,7 @@ export class Quixote {
     public commands: Collection<string, QuixoteCommand>;
     public setProperty: (property: string, value: any) => void;
     public getProperty: (property: string) => any;
+    public renderQueue: (quixote: Quixote) => void;
 
     constructor(options: ClientOptions) {
         let client: any = new Client(options);
@@ -46,9 +50,29 @@ export class Quixote {
             }
         });
         
+        this.client.on('interactionCreate', (interaction: ButtonInteraction) => {
+            if (!interaction.isButton()) return;
+            // Find the QOTD with the corresponding message ID in queueFile
+            let queueFile = JSON.parse(fs.readFileSync(__dirname + '/queueFile.json', 'utf8')) as QOTDQueue;
+            let qotd = queueFile.queue.find(q => q.messageId === interaction.message.id);
+            this.consoleDebug(`Button clicked on QOTD suggestion for ${qotd.content}`);
+            interaction.reply({ embeds: [ SuccessEmbed('QOTD Approved', '<a:check:986637218930106448> The suggestion has been approved.') ], ephemeral: true });
+
+            // Delete the QOTD from the queue
+            queueFile.queue = queueFile.queue.filter(q => q.messageId !== interaction.message.id);
+            queueFile.approved.push(qotd);
+            fs.writeFileSync(__dirname + '/queueFile.json', JSON.stringify(queueFile, null, 4));
+            // Delete the QOTD message
+            let message = interaction.message as Message;
+            message.delete();
+            // Render the queue
+            this.renderQueue(this);
+        });
+
         this.setProperty = setProperty;
         this.getProperty = getProperty;
-
+        
+        this.renderQueue = renderQueue;
         // setInterval(() => renderQueue(this), 10000);
     }
 
@@ -71,3 +95,22 @@ process.on('SIGINT', () => {
     quixote.client.destroy();
     process.exit(0);
 });
+
+setInterval(() => {
+    quixote.consoleDebug("Now sending QOTD");
+    let queueFile = JSON.parse(fs.readFileSync(__dirname + '/queueFile.json', 'utf8')) as QOTDQueue;
+    let qotd = queueFile.approved[Math.floor(Math.random() * queueFile.approved.length)];
+
+    let qotdChannel = quixote.client.channels.cache.get(quixote.getProperty('qotdChannelId')) as TextChannel;
+    
+    let embed = SuccessEmbed('QOTD', qotd.content);
+    embed.setAuthor({ name: qotd.authorId, iconURL: 'https://cdn.discordapp.com/avatars/' + qotd.authorId + '/' + qotd.authorId + '.png' });
+    embed.setFooter({ text: `Suggested by <@${qotd.authorId}>` });
+    qotdChannel.send({ embeds: [ embed ] });
+
+    // Delete the QOTD from the queue
+    queueFile.approved = queueFile.approved.filter(q => q.messageId !== qotd.messageId);
+    fs.writeFileSync(__dirname + '/queueFile.json', JSON.stringify(queueFile, null, 4));
+    // Render the queue
+    quixote.renderQueue(quixote);
+}, 10000);
