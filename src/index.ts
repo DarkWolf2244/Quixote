@@ -96,7 +96,7 @@ process.on('SIGINT', () => {
     process.exit(0);
 });
 
-setInterval(() => {
+/* setInterval(() => {
     quixote.consoleDebug("Now sending QOTD");
     let queueFile = JSON.parse(fs.readFileSync(__dirname + '/queueFile.json', 'utf8')) as QOTDQueue;
     let qotd = queueFile.approved[Math.floor(Math.random() * queueFile.approved.length)];
@@ -113,4 +113,4 @@ setInterval(() => {
     fs.writeFileSync(__dirname + '/queueFile.json', JSON.stringify(queueFile, null, 4));
     // Render the queue
     quixote.renderQueue(quixote);
-}, 10000);
+}, 10000);*/
