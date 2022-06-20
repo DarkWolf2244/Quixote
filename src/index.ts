@@ -2,6 +2,7 @@ import { Client, Intents, ClientOptions, CommandInteraction, Collection, Interac
 import { QOTDQueue, QuixoteCommand } from './interfaces';
 import { setProperty, getProperty } from './Config';
 import { SuccessEmbed } from './EmbedTemplates';
+let express = require('express');
 
 import 'colorts/lib/string';
 import * as fs from 'fs';
@@ -114,3 +115,8 @@ process.on('SIGINT', () => {
     // Render the queue
     quixote.renderQueue(quixote);
 }, 10000);*/
+
+let app = express();
+
+app.get('/health', (req, res) => res.send("App running!"));
+app.listen(8080, () => quixote.consoleDebug("Express health server running.");
