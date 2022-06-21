@@ -118,5 +118,5 @@ process.on('SIGINT', () => {
 
 let app = express();
 
-app.get('/health', (req, res) => res.send("App running!"));
-app.listen(10000, () => quixote.consoleDebug("Express health server running."));
+app.get('/', (req, res) => res.send("App running!"));
+app.listen(80, () => quixote.consoleDebug("Express server running."));
