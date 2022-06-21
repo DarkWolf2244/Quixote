@@ -119,4 +119,4 @@ process.on('SIGINT', () => {
 let app = express();
 
 app.get('/', (req, res) => res.send("App running!"));
-app.listen(80, () => quixote.consoleDebug("Express server running."));
+app.listen(process.env.PORT || 3000, () => quixote.consoleDebug("Express server running."));
