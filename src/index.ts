@@ -63,9 +63,6 @@ export class Quixote {
             queueFile.queue = queueFile.queue.filter(q => q.messageId !== interaction.message.id);
             queueFile.approved.push(qotd);
             fs.writeFileSync(__dirname + '/queueFile.json', JSON.stringify(queueFile, null, 4));
-            // Delete the QOTD message
-            let message = interaction.message as Message;
-            message.delete();
             // Render the queue
             this.renderQueue(this);
         });
@@ -97,16 +94,23 @@ process.on('SIGINT', () => {
     process.exit(0);
 });
 
-/* setInterval(() => {
+setInterval(() => {
     quixote.consoleDebug("Now sending QOTD");
     let queueFile = JSON.parse(fs.readFileSync(__dirname + '/queueFile.json', 'utf8')) as QOTDQueue;
+
     let qotd = queueFile.approved[Math.floor(Math.random() * queueFile.approved.length)];
+
+    if (!qotd) {
+        quixote.consoleError("No QOTD found");
+        return;
+    }
 
     let qotdChannel = quixote.client.channels.cache.get(quixote.getProperty('qotdChannelId')) as TextChannel;
     
-    let embed = SuccessEmbed('QOTD', qotd.content);
-    embed.setAuthor({ name: qotd.authorId, iconURL: 'https://cdn.discordapp.com/avatars/' + qotd.authorId + '/' + qotd.authorId + '.png' });
-    embed.setFooter({ text: `Suggested by <@${qotd.authorId}>` });
+    let embed = SuccessEmbed('The Question of the Day', qotd.content);
+    embed.setFooter({ text: '' });
+    embed.setColor('PURPLE');
+
     qotdChannel.send({ embeds: [ embed ] });
 
     // Delete the QOTD from the queue
@@ -114,7 +118,7 @@ process.on('SIGINT', () => {
     fs.writeFileSync(__dirname + '/queueFile.json', JSON.stringify(queueFile, null, 4));
     // Render the queue
     quixote.renderQueue(quixote);
-}, 10000);*/
+}, 10000);
 
 let app = express();
 
